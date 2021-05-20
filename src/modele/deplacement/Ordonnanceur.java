@@ -40,7 +40,7 @@ public class Ordonnanceur extends Observable implements Runnable {
                     update = true;
             }
 
-            //Controle4Directions.getInstance().resetDirection();
+            Controle4Directions.getInstance().resetDirection();
 
             if (update) {
                 setChanged();
