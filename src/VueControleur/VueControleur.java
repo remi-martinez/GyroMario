@@ -1,6 +1,10 @@
 package VueControleur;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridLayout;
+import modele.plateau.Jeu;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -27,6 +31,9 @@ public class VueControleur extends JFrame implements Observer {
 
     private int sizeX; // taille de la grille affichée
     private int sizeY;
+    
+    private int resX; //resolution du jeu
+    private int resY;
 
     // icones affichées dans la grille
     private ImageIcon icoHeroRight;
@@ -36,13 +43,18 @@ public class VueControleur extends JFrame implements Observer {
     private ImageIcon icoMur;
     private ImageIcon icoColonne;
 
+    private JTable score;
+    private JComponent grilleJLabels;
     private JLabel[][] tabJLabel; // cases graphique (au moment du rafraichissement, chaque case va être associée à une icône, suivant ce qui est présent dans le modèle)
-
+    private JLabel status;
 
     public VueControleur(Jeu _jeu) {
         sizeX = jeu.SIZE_X;
         sizeY = _jeu.SIZE_Y;
         jeu = _jeu;
+        
+        resX = 400;
+        resY = 250;
 
         chargerLesIcones();
         placerLesComposantsGraphiques();
@@ -51,7 +63,7 @@ public class VueControleur extends JFrame implements Observer {
 
     private void ajouterEcouteurClavier() {
         addKeyListener(new KeyAdapter() { // new KeyAdapter() { ... } est une instance de classe anonyme, il s'agit d'un objet qui correspond au controleur dans MVC
-            @Override
+            /*@Override
             public void keyPressed(KeyEvent e) {
                 switch(e.getKeyCode()) {  // on regarde quelle touche a été pressée
                     case KeyEvent.VK_LEFT : jeu.getHeros().gauche(); break;
@@ -60,7 +72,7 @@ public class VueControleur extends JFrame implements Observer {
                     case KeyEvent.VK_UP : jeu.getHeros().haut(); break;
 
                 }
-            }
+            }*/
         });
     }
 
@@ -86,15 +98,14 @@ public class VueControleur extends JFrame implements Observer {
         return new ImageIcon(image);
     }
 
-    private void placerLesComposantsGraphiques() {
-        setTitle("Gyromite");
-        setSize(400, 250);
+    private JPanel placerLesComposantsGraphiques() {
+        JPanel game = new JPanel(new BorderLayout());
+        setTitle("GyroLego");
+        setSize(resX, resY);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // permet de terminer l'application à la fermeture de la fenêtre
 
-        JComponent grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases graphiques et les positionner sous la forme d'une grille
-
+        grilleJLabels = new JPanel(new GridLayout(sizeY, sizeX)); // grilleJLabels va contenir les cases graphiques et les positionner sous la forme d'une grille
         tabJLabel = new JLabel[sizeX][sizeY];
-
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
                 JLabel jlab = new JLabel();
@@ -102,7 +113,15 @@ public class VueControleur extends JFrame implements Observer {
                 grilleJLabels.add(jlab);
             }
         }
-        add(grilleJLabels);
+        String data[][] = this.jeu.getScore();
+        String columns[] = {"","","","","",""};
+        score = new JTable(data, columns);
+        score.setFocusable(false);
+        score.setRowHeight(resY/10);
+        grilleJLabels.setBackground(Color.BLACK);
+        game.add(score, BorderLayout.NORTH);
+        game.add(grilleJLabels, BorderLayout.CENTER);
+        return game;
     }
 
     
@@ -113,10 +132,13 @@ public class VueControleur extends JFrame implements Observer {
 
         for (int x = 0; x < sizeX; x++) {
             for (int y = 0; y < sizeY; y++) {
-				EntiteStatique e = jeu.getEntite(x, y);
-                if (e instanceof Mur) {
+                System.out.println(tabJLabel[x][y]);
+				if (jeu.getGrille()[x][y][1] instanceof Heros) { 
+					// TODO si la grille du modèle contient un Pacman, on associe l'icône Pacman du côté de la vue
+                    tabJLabel[x][y].setIcon(icoHeroRight);
+                } else if (jeu.getGrille()[x][y][0] instanceof Mur) {
                     tabJLabel[x][y].setIcon(icoMur);
-                } else if (e instanceof CaseNormale) {
+                }else {
                     tabJLabel[x][y].setIcon(icoCaseNormale);
                 }
             }
@@ -124,7 +146,7 @@ public class VueControleur extends JFrame implements Observer {
 
 
 
-        tabJLabel[jeu.getHeros().getX()][jeu.getHeros().getY()].setIcon(icoHeroRight);
+        //tabJLabel[jeu.getHeros().getX()][jeu.getHeros().getY()].setIcon(icoHeroRight);
 
     }
 

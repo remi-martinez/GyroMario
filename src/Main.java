@@ -15,9 +15,9 @@ public class Main {
         
         VueControleur vc = new VueControleur(jeu);
 
-        jeu.addObserver(vc);
+        jeu.getOrdonnanceur().addObserver(vc);
         
         vc.setVisible(true);
-        jeu.start();
+        jeu.start(300);
     }
 }

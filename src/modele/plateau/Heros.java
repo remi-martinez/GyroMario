@@ -1,76 +1,54 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package modele.plateau;
 
 /**
  * Héros du jeu
  */
-public class Heros {
-    private int x;
-    private int y;
+public class Heros extends EntiteDynamique {
+    private int spawnX;
+    private int spawnY;
+    private int vitesse;
 
-    private Jeu jeu;
-
-    public int getX() {
-        return x;
+    public Heros(Jeu _jeu, int x, int y) {
+        super(_jeu);
+        spawnX = x;
+        spawnY = y;
+        vitesse = 0; 
     }
 
-    public int getY() {
-        return y;
+    public boolean tueEntite(Entite e) {
+        return false;
+    };
+    public boolean peutEtreEcrase() { return true; }
+    public boolean peutServirDeSupport() { return true; }
+    public boolean peutPermettreDeMonterDescendre() { return false; };
+    public boolean peutEtreRamasse(Entite e) { return false; }
+
+    public int getSpawnX() {
+        return spawnX;
     }
 
-    public Heros(Jeu _jeu, int _x, int _y) {
-        jeu = _jeu;
-        x = _x;
-        y = _y;
+    public void setSpawnX(int spawnX) {
+        this.spawnX = spawnX;
     }
 
-    public void droite() {
-        if (traversable(x+1, y)) {
-            x ++;
-            y = gravity(x,y);
-        }
+    public int getSpawnY() {
+        return spawnY;
     }
 
-    public void gauche() {
-        if (traversable(x-1, y)) {
-            x --;
-            y = gravity(x,y);
-        }
+    public void setSpawnY(int spawnY) {
+        this.spawnY = spawnY;
     }
 
-    public void bas() {
-        if (traversable(x, y+1)) {
-            y ++;
-            y = gravity(x,y);
-        }
+    public int getVitesse() {
+        return vitesse;
     }
 
-    public void haut() {
-        if (traversable(x, y-1)) {
-            y --;
-            //	y = gravity(x,y+1);
-        }
+    public void setVitesse(int vitesse) {
+        this.vitesse = vitesse;
+    }
+    public void reinitialiserVitesse(){
+        vitesse = 0;
     }
 
-    private int gravity(int x, int y) {
-    	
-		while(traversable(x, y+1)) {
-			y ++;
-		}
-    	return y;
-    	
-    }
     
-    private boolean traversable(int x, int y) {
-
-        if (x >0 && x < jeu.SIZE_X && y > 0 && y < jeu.SIZE_Y) {
-            return jeu.getEntite(x, y).traversable();
-        } else {
-            return false;
-        }
-    }
 }

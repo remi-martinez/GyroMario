@@ -1,4 +1,4 @@
-package modele.deplacemen;
+package modele.deplacement;
 
 import modele.plateau.EntiteDynamique;
 
