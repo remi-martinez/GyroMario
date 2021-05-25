@@ -27,6 +27,7 @@ public class Controle4Directions extends RealisateurDeDeplacement {
     public boolean realiserDeplacement() {
         boolean ret = false;
         for (EntiteDynamique e : lstEntitesDynamiques) {
+            e.setDirection(directionCourante);
             if (directionCourante != null) {
                 Entite eBas = e.regarderDansLaDirection(Direction.bas);
                 switch (directionCourante) {
